@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 时代的教育变革：家长必须知道的真相</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Inter:wght@400;700&family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', 'Inter', sans-serif;
+            background-color: #0a0a0a;
+            color: #FFFFFF;
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .page {
+            display: none;
+            width: 100vw;
+            height: 100vh;
+            padding: clamp(20px, 5vh, 60px) clamp(20px, 5vw, 80px);
+            padding-bottom: clamp(80px, 15vh, 120px);
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            overflow-y: auto;
+        }
+
+        .page.active {
+            display: flex;
+        }
+
+        h1 {
+            font-family: 'Montserrat', 'Noto Sans SC', sans-serif;
+            font-weight: 700;
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            line-height: 1.2;
+            margin-bottom: clamp(15px, 3vh, 30px);
+            letter-spacing: 2px;
+        }
+
+        h2 {
+            font-family: 'Noto Sans SC', 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: clamp(1.8rem, 5vw, 3rem);
+            line-height: 1.3;
+            margin-bottom: clamp(10px, 2vh, 20px);
+        }
+
+        h3 {
+            font-family: 'Noto Sans SC', 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: clamp(1.3rem, 3.5vw, 2rem);
+            line-height: 1.4;
+            margin-bottom: clamp(8px, 1.5vh, 15px);
+        }
+
+        .subtitle {
+            font-size: clamp(1.1rem, 3vw, 1.8rem);
+            line-height: 1.6;
+            margin-bottom: clamp(10px, 2vh, 20px);
+            opacity: 0.9;
+        }
+
+        .body-text {
+            font-size: clamp(1rem, 2.5vw, 1.4rem);
+            line-height: 1.8;
+            max-width: 900px;
+            width: 90%;
+            margin: clamp(10px, 2vh, 20px) auto;
+            opacity: 0.85;
+        }
+
+        .accent {
+            color: #00aaff;
+        }
+
+        .divider {
+            width: clamp(150px, 30vw, 200px);
+            height: clamp(3px, 0.5vh, 4px);
+            background: linear-gradient(90deg, transparent, #00aaff, transparent);
+            margin: clamp(15px, 3vh, 30px) auto;
+        }
+
+        /* Navigation */
+        .nav-buttons {
+            position: fixed;
+            bottom: clamp(20px, 4vh, 40px);
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: clamp(10px, 2vw, 20px);
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            padding: clamp(10px, 2vh, 15px) clamp(20px, 5vw, 40px);
+            font-size: clamp(0.9rem, 2vw, 1.1rem);
+            font-family: 'Noto Sans SC', 'Inter', sans-serif;
+            font-weight: 700;
+            background-color: transparent;
+            color: #FFFFFF;
+            border: 2px solid #00aaff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            touch-action: manipulation;
+        }
+
+        .nav-btn:hover:not(:disabled) {
+            background-color: #00aaff;
+            box-shadow: 0 0 20px rgba(0, 170, 255, 0.5);
+        }
+
+        .nav-btn:active:not(:disabled) {
+            background-color: #0088cc;
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .page-counter {
+            position: fixed;
+            top: clamp(15px, 3vh, 30px);
+            right: clamp(20px, 4vw, 40px);
+            font-size: clamp(0.8rem, 2vw, 1rem);
+            color: #00aaff;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        /* Title Page Specific */
+        .title-page h1 {
+            font-size: clamp(3rem, 10vw, 6.5rem);
+            margin-bottom: 0;
+        }
+
+        .title-page .vs {
+            font-size: clamp(1.5rem, 5vw, 3rem);
+            color: #00aaff;
+            margin: clamp(10px, 2vh, 20px) 0;
+        }
+
+        /* Profile Page */
+        .profile-content {
+            max-width: 1000px;
+            width: 100%;
+        }
+
+        .profile-intro {
+            font-size: clamp(1.1rem, 2.8vw, 1.6rem);
+            line-height: 1.8;
+            margin: clamp(15px, 3vh, 30px) auto;
+            padding: clamp(15px, 3vh, 30px);
+            border-left: 4px solid #00aaff;
+            background-color: rgba(0, 170, 255, 0.05);
+            text-align: left;
+        }
+
+        /* Question Mark Icon */
+        .icon {
+            font-size: clamp(4rem, 12vw, 8rem);
+            color: #00aaff;
+            margin: clamp(20px, 4vh, 40px) 0;
+        }
+
+        /* List styling */
+        .question-list {
+            text-align: left;
+            max-width: 800px;
+            width: 90%;
+            margin: clamp(15px, 3vh, 30px) auto;
+            font-size: clamp(1.1rem, 2.8vw, 1.5rem);
+            line-height: 2;
+        }
+
+        .question-list div {
+            margin: clamp(10px, 2vh, 20px) 0;
+            padding-left: clamp(20px, 4vw, 30px);
+            position: relative;
+        }
+
+        .question-list div::before {
+            content: "•";
+            color: #00aaff;
+            position: absolute;
+            left: 0;
+            font-size: clamp(1.5rem, 3vw, 2rem);
+        }
+
+        /* Mobile-specific adjustments */
+        @media (max-width: 768px) {
+            .page {
+                padding-bottom: 100px;
+            }
+
+            .nav-buttons {
+                width: 90%;
+                max-width: 400px;
+            }
+
+            .nav-btn {
+                flex: 1;
+            }
+        }
+
+        /* Landscape mobile */
+        @media (max-height: 500px) and (orientation: landscape) {
+            .page {
+                justify-content: flex-start;
+                padding-top: 60px;
+            }
+
+            .icon {
+                margin: 10px 0;
+            }
+
+            .divider {
+                margin: 10px auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Page Counter -->
+    <div class="page-counter">
+        <span id="currentPage">1</span> / <span id="totalPages">34</span>
+    </div>
+
+    <!-- Page 1: Title Slide -->
+    <div class="page active title-page">
+        <h1>AI</h1>
+        <div class="vs">vs.</div>
+        <h1>人类</h1>
+        <div class="divider"></div>
+        <div class="subtitle">教育革命：家长必须知道的真相</div>
+    </div>
+
+    <!-- Page 2: Profile/Introduction -->
+    <div class="page">
+        <h2 class="accent">关于讲者</h2>
+        <div class="divider"></div>
+        <div class="profile-content">
+            <div class="profile-intro">
+                我在微软教授机器对抗网络攻击，使用 AI 代理和大型语言模型保护全球数十亿用户的安全。我也是 Kaggle 竞赛大师，热衷于挑战看似不可能的机器学习问题。
+            </div>
+        </div>
+    </div>
+
+    <!-- Page 3: The Core Problem -->
+    <div class="page">
+        <h2>我们为什么如此焦虑?</h2>
+        <div class="divider"></div>
+        <div class="icon">?</div>
+        <div class="question-list">
+            <div>"我的孩子是在作弊吗?"</div>
+            <div>"这会让他们停止思考吗?"</div>
+            <div>"这会取代他们的老师吗?"</div>
+        </div>
+    </div>
+
+    <!-- Page 4: The "Tech Trauma" -->
+    <div class="page">
+        <h2>我们似曾相识</h2>
+        <div class="divider"></div>
+        <div class="icon">⚠️</div>
+        <div class="body-text">
+            社交媒体承诺了"连接"，但带来的却是孤独感。
+        </div>
+        <div class="body-text" style="margin-top: 30px;">
+            AI 承诺"个性化"。我们有理由保持怀疑。
+        </div>
+    </div>
+
+    <!-- Page 5: The New Metaphor -->
+    <div class="page">
+        <h2>AI 不是一场我们可以躲避的<span style="text-decoration: line-through;">风暴</span></h2>
+        <div class="divider"></div>
+        <div class="subtitle">它是<span class="accent">气候变化</span>。</div>
+        <div class="body-text" style="margin-top: 40px;">
+            地形已经永久性地改变。<br>
+            我们必须适应，而不仅仅是忍受。
+        </div>
+    </div>
+
+    <!-- Page 6: The Agenda -->
+    <div class="page">
+        <h2>从焦虑到行动</h2>
+        <div class="divider"></div>
+        <div class="question-list">
+            <div><strong class="accent">1. 真相：</strong>课堂上真正发生了什么。</div>
+            <div><strong class="accent">2. 变革：</strong>重要的新技能。</div>
+            <div><strong class="accent">3. 风险：</strong>我们必须管理的危险。</div>
+            <div><strong class="accent">4. 计划：</strong>您作为家长的新角色。</div>
+        </div>
+    </div>
+
+    <!-- Page 7: Section Title - Part 1 -->
+    <div class="page">
+        <h1 class="accent">第一部分：真相</h1>
+        <div class="divider"></div>
+        <div class="subtitle">揭穿两大核心迷思</div>
+    </div>
+
+    <!-- Page 8: Myth 1 -->
+    <div class="page">
+        <h2 class="accent">迷思：</h2>
+        <div class="divider"></div>
+        <h2>"AI 将取代教师。"</h2>
+        <div class="icon">🤖</div>
+    </div>
+
+    <!-- Page 9: Reality 1 -->
+    <div class="page">
+        <h2 class="accent">现实：</h2>
+        <div class="divider"></div>
+        <h2>AI 是"副驾驶"，不是驾驶员。</h2>
+        <div class="body-text" style="margin-top: 40px;">
+            它自动化评分和行政工作，让教师专注于人性化的工作：指导、启发和连接。
+        </div>
+        <div class="icon" style="font-size: clamp(3rem, 10vw, 6rem); margin-top: 30px;">👨‍🏫 + 🤖</div>
+    </div>
+
+    <!-- Page 10: Myth 2 -->
+    <div class="page">
+        <h2 class="accent">迷思：</h2>
+        <div class="divider"></div>
+        <h2>"AI 等同于作弊。"</h2>
+        <div class="icon">📝❌</div>
+    </div>
+
+    <!-- Page 11: Reality 2 -->
+    <div class="page">
+        <h2 class="accent">现实：</h2>
+        <div class="divider"></div>
+        <h2>它是一个工具，就像计算器。</h2>
+        <div class="body-text" style="margin-top: 40px;">
+            我们不会禁止计算器；我们教导<em>何时</em>使用它们。目标是为新时代定义学术诚信。
+        </div>
+        <div class="icon" style="margin-top: 30px;">🧮</div>
+    </div>
+
+    <!-- Page 12: What AI Actually Does (Visible) -->
+    <div class="page">
+        <h2>"可见的 AI"：个性化辅导员</h2>
+        <div class="divider"></div>
+        <div class="question-list">
+            <div><strong class="accent">智能辅导系统：</strong>7x24 小时，无限耐心的帮助 (Carnegie Learning, Khanmigo)。</div>
+            <div><strong class="accent">自适应学习：</strong>根据您孩子的答案动态调整课程 (DreamBox)。</div>
+        </div>
+        <div class="icon" style="margin-top: 30px;">💻</div>
+    </div>
+
+    <!-- Page 13: What AI Actually Does (Invisible) -->
+    <div class="page">
+        <h2>"不可见的 AI"：支持系统</h2>
+        <div class="divider"></div>
+        <div class="question-list">
+            <div><strong class="accent">可及性：</strong>为所有学习者提供实时翻译和文本转语音。</div>
+            <div><strong class="accent">分析：</strong>帮助教师在学生真正"掉队"<em>之前</em>发现问题。</div>
+        </div>
+        <div class="icon" style="margin-top: 30px;">📊</div>
+    </div>
+
+    <!-- Page 14: Section Title - Part 2 -->
+    <div class="page">
+        <h1 class="accent">第二部分：变革</h1>
+        <div class="divider"></div>
+        <div class="subtitle">为什么"人性化技能"是新的"硬技能"</div>
+    </div>
+
+    <!-- Page 15: The Cognitive Gym -->
+    <div class="page">
+        <h2>认知健身房</h2>
+        <div class="divider"></div>
+        <div class="body-text">
+            AI 是一个"认知叉车"。它可以做繁重的工作。但如果你从不自己举重，你的肌肉（你的大脑）将会萎缩。
+        </div>
+        <div class="icon" style="margin-top: 40px;">🏋️ vs 🏗️</div>
+    </div>
+
+    <!-- Page 16: The New "Core Four" -->
+    <div class="page">
+        <h2>无法自动化的技能</h2>
+        <div class="divider"></div>
+        <div class="question-list">
+            <div><strong class="accent">1. 批判性思维</strong> 🧠</div>
+            <div><strong class="accent">2. 创造力</strong> 💡</div>
+            <div><strong class="accent">3. 协作</strong> 👥</div>
+            <div><strong class="accent">4. 同理心</strong> ❤️</div>
+        </div>
+    </div>
+
+    <!-- Page 17: Skill 1 - Critical Thinking -->
+    <div class="page">
+        <h2>技能 1：批判性思维</h2>
+        <div class="divider"></div>
+        <div class="subtitle">工作不再是<em>找到</em>答案。</div>
+        <div class="subtitle" style="margin-top: 30px;">而是<span class="accent">质疑</span>答案。</div>
+        <div class="body-text" style="margin-top: 40px;">
+            AI 被训练得有说服力，而不是真实性。它会"幻觉"。
+        </div>
+        <div class="icon" style="margin-top: 30px;">✓ ✗</div>
+    </div>
+
+    <!-- Page 18: Skill 2 - Creativity -->
+    <div class="page">
+        <h2>技能 2：创造力</h2>
+        <div class="divider"></div>
+        <div class="subtitle">工作不再是<em>生成</em>内容。</div>
+        <div class="subtitle" style="margin-top: 30px;">而是拥有原创的<span class="accent">意图</span>。</div>
+        <div class="body-text" style="margin-top: 40px;">
+            AI 擅长复制过去；它无法创造全新的未来。
+        </div>
+        <div class="icon" style="margin-top: 30px;">🪄 vs 🎨</div>
+    </div>
+
+    <!-- Page 19: Skill 3 - Collaboration -->
+    <div class="page">
+        <h2>技能 3：协作</h2>
+        <div class="divider"></div>
+        <div class="subtitle">AI 无法建立团队。</div>
+        <div class="body-text" style="margin-top: 40px;">
+            它无法处理人类冲突、建立信任或理解氛围。最有价值的工作将由使用 AI 的<em>团队</em>完成，而非个人。
+        </div>
+        <div class="icon" style="margin-top: 30px;">👥👥👥</div>
+    </div>
+
+    <!-- Page 20: Skill 4 - Empathy -->
+    <div class="page">
+        <h2>技能 4：同理心与情商</h2>
+        <div class="divider"></div>
+        <div class="subtitle">终极的人类技能</div>
+        <div class="body-text" style="margin-top: 40px;">
+            AI 可以<em>计算</em>情绪，但它无法<em>关心</em>。这是数据驱动世界中最有价值的人类技能。
+        </div>
+        <div class="icon" style="margin-top: 30px;">❤️</div>
+    </div>
+
+    <!-- Page 21: Section Title - Part 3 -->
+    <div class="page">
+        <h1 class="accent">第三部分：风险</h1>
+        <div class="divider"></div>
+        <div class="subtitle">我们不能忽视的真相</div>
+    </div>
+
+    <!-- Page 22: Risk 1 - Algorithmic Bias -->
+    <div class="page">
+        <h2>风险 1：算法偏见</h2>
+        <div class="divider"></div>
+        <div class="subtitle">"垃圾输入，福音输出"</div>
+        <div class="body-text" style="margin-top: 40px;">
+            AI 是通过历史数据训练的。如果数据本身带有种族、性别或其他偏见，AI 将学习、自动化并<em>放大</em>这种偏见。
+        </div>
+        <div class="icon" style="margin-top: 30px;">⚖️</div>
+    </div>
+
+    <!-- Page 23: Risk 2 - Data Privacy -->
+    <div class="page">
+        <h2>风险 2：数据隐私</h2>
+        <div class="divider"></div>
+        <div class="subtitle">谁拥有您孩子的学习数据？</div>
+        <div class="body-text" style="margin-top: 40px;">
+            每一个错误答案，每一个学习模式。这些数据是 AI 的"燃料"。我们必须问：谁控制它，如何保护它？
+        </div>
+        <div class="icon" style="margin-top: 30px;">🔒</div>
+    </div>
+
+    <!-- Page 24: Risk 3 - The New Digital Divide -->
+    <div class="page">
+        <h2>风险 3：<em>新的</em>数字鸿沟</h2>
+        <div class="divider"></div>
+        <div class="subtitle">"AI 素养"差距</div>
+        <div class="body-text" style="margin-top: 40px;">
+            旧的鸿沟是"拥有笔记本电脑"。新的鸿沟是"批判性地<em>使用 AI</em>"。
+        </div>
+        <div class="icon" style="margin-top: 30px;">👤 ⚙️ vs ⚙️ 👤</div>
+    </div>
+
+    <!-- Page 25: The Solution -->
+    <div class="page">
+        <h2>"人类在环"</h2>
+        <div class="divider"></div>
+        <div class="body-text">
+            这必须是我们不可妥协的规则。AI 可以<em>建议</em>。它可以<em>标记</em>。它可以<em>提议</em>。但人类必须<span class="accent">始终</span>做出最终决定。
+        </div>
+        <div class="icon" style="margin-top: 40px;">👤 ⟳ ⚙️</div>
+    </div>
+
+    <!-- Page 26: Section Title - Part 4 -->
+    <div class="page">
+        <h1 class="accent">第四部分：行动计划</h1>
+        <div class="divider"></div>
+        <div class="subtitle">您作为家长的新角色</div>
+    </div>
+
+    <!-- Page 27: Action 1 - Talk to Your Child -->
+    <div class="page">
+        <h2>行动 1：与您的孩子交谈</h2>
+        <div class="divider"></div>
+        <div class="subtitle">成为"教练"，而非"警察"。</div>
+        <div class="body-text" style="margin-top: 40px;">
+            不要审问（"你作弊了吗？"）。保持好奇（"给我展示一下这是怎么工作的。"）。
+        </div>
+        <div class="icon" style="margin-top: 40px; font-size: clamp(3rem, 10vw, 6rem);">🚫👮 → 🎯</div>
+    </div>
+
+    <!-- Page 28: Action 2 - Talk to Your School -->
+    <div class="page">
+        <h2>行动 2：与您的学校沟通</h2>
+        <div class="divider"></div>
+        <div class="subtitle">成为"合作伙伴"，而非"原告"。</div>
+        <div class="body-text" style="margin-top: 40px;">
+            学校也在努力追赶，就像您一样。他们需要您的合作来建立良好的政策。
+        </div>
+        <div class="icon" style="margin-top: 40px;">🤝</div>
+    </div>
+
+    <!-- Page 29: The Parent Checklist -->
+    <div class="page">
+        <h2>给学校的 5 个问题</h2>
+        <div class="divider"></div>
+        <div class="question-list">
+            <div>我们是否有正式的 AI 政策？</div>
+            <div>我们如何培训教师使用这项技术？</div>
+            <div>我们如何保护学生数据隐私？</div>
+            <div>我们如何确保所有重大决策都有"人类在环"？</div>
+            <div>我们如何确保公平并解决偏见？</div>
+        </div>
+    </div>
+
+    <!-- Page 30: Action 3 - Be the Example -->
+    <div class="page">
+        <h2>行动 3：成为榜样</h2>
+        <div class="divider"></div>
+        <div class="subtitle">示范负责任的使用</div>
+        <div class="body-text" style="margin-top: 40px;">
+            让您的孩子看到<em>您</em>使用 AI。让他们听到您说："这很棒，但让我核实一下这个事实。"您是他们批判性思维的主要榜样。
+        </div>
+        <div class="icon" style="margin-top: 40px; font-size: clamp(3rem, 10vw, 6rem);">👨‍👩‍👧‍👦 💻</div>
+    </div>
+
+    <!-- Page 31: The Final Truth -->
+    <div class="page">
+        <h2>拥抱"高效的挣扎"</h2>
+        <div class="divider"></div>
+        <div class="body-text">
+            学习<em>本应</em>是困难的。"挣扎"正是建立认知肌肉的过程。我们最重要的工作是阻止 AI 消除挣扎。
+        </div>
+        <div class="icon" style="margin-top: 40px;">🧠 💪</div>
+    </div>
+
+    <!-- Page 32: Closing Statement -->
+    <div class="page">
+        <h2>从焦虑到能动性</h2>
+        <div class="divider"></div>
+        <div class="body-text">
+            未来属于那些能够<em>批判性</em>和<em>创造性</em>地指挥这些强大工具的人，而不是被工具指挥的人。
+        </div>
+        <div class="icon accent" style="margin-top: 40px; font-size: clamp(4rem, 12vw, 8rem);">👤</div>
+    </div>
+
+    <!-- Page 33: Q&A -->
+    <div class="page">
+        <h1>问答环节</h1>
+        <div class="divider"></div>
+        <div class="subtitle">让我们一起讨论。</div>
+    </div>
+
+    <!-- Page 34: Thank You -->
+    <div class="page">
+        <h1>谢谢大家</h1>
+        <div class="divider"></div>
+        <div class="subtitle" style="margin-top: 60px;">
+            让我们一起，帮助我们的孩子成为这场 AI 变革的明智、有能力和真正"以人为本"的领导者。
+        </div>
+    </div>
+
+    <!-- Navigation Buttons -->
+    <div class="nav-buttons">
+        <button class="nav-btn" id="prevBtn" onclick="changePage(-1)">上一页</button>
+        <button class="nav-btn" id="nextBtn" onclick="changePage(1)">下一页</button>
+    </div>
+
+    <script>
+        let currentPage = 1;
+        const totalPages = 34;
+
+        function showPage(pageNum) {
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(page => page.classList.remove('active'));
+            pages[pageNum - 1].classList.add('active');
+
+            document.getElementById('currentPage').textContent = pageNum;
+
+            // Update button states
+            document.getElementById('prevBtn').disabled = (pageNum === 1);
+            document.getElementById('nextBtn').disabled = (pageNum === totalPages);
+
+            // Scroll to top of page on navigation
+            window.scrollTo(0, 0);
+        }
+
+        function changePage(direction) {
+            currentPage += direction;
+            if (currentPage < 1) currentPage = 1;
+            if (currentPage > totalPages) currentPage = totalPages;
+            showPage(currentPage);
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') changePage(-1);
+            if (e.key === 'ArrowRight') changePage(1);
+            // Space bar to go to next page
+            if (e.key === ' ') {
+                e.preventDefault();
+                changePage(1);
+            }
+        });
+
+        // Touch/swipe support for mobile
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            if (touchEndX < touchStartX - swipeThreshold) {
+                // Swipe left - next page
+                changePage(1);
+            }
+            if (touchEndX > touchStartX + swipeThreshold) {
+                // Swipe right - previous page
+                changePage(-1);
+            }
+        }
+
+        // Initialize
+        showPage(1);
+    </script>
+</body>
+</html>

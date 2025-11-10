@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The AI Revolution: A Parent's Guide to the Truth</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0a0a0a;
+            color: #FFFFFF;
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .page {
+            display: none;
+            width: 100vw;
+            height: 100vh;
+            padding: clamp(20px, 5vh, 60px) clamp(20px, 5vw, 80px);
+            padding-bottom: clamp(80px, 15vh, 120px);
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            overflow-y: auto;
+        }
+
+        .page.active {
+            display: flex;
+        }
+
+        h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            line-height: 1.2;
+            margin-bottom: clamp(15px, 3vh, 30px);
+            letter-spacing: 2px;
+        }
+
+        h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: clamp(1.8rem, 5vw, 3rem);
+            line-height: 1.3;
+            margin-bottom: clamp(10px, 2vh, 20px);
+        }
+
+        h3 {
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: clamp(1.3rem, 3.5vw, 2rem);
+            line-height: 1.4;
+            margin-bottom: clamp(8px, 1.5vh, 15px);
+        }
+
+        .subtitle {
+            font-size: clamp(1.1rem, 3vw, 1.8rem);
+            line-height: 1.6;
+            margin-bottom: clamp(10px, 2vh, 20px);
+            opacity: 0.9;
+        }
+
+        .body-text {
+            font-size: clamp(1rem, 2.5vw, 1.4rem);
+            line-height: 1.8;
+            max-width: 900px;
+            width: 90%;
+            margin: clamp(10px, 2vh, 20px) auto;
+            opacity: 0.85;
+        }
+
+        .accent {
+            color: #00aaff;
+        }
+
+        .divider {
+            width: clamp(150px, 30vw, 200px);
+            height: clamp(3px, 0.5vh, 4px);
+            background: linear-gradient(90deg, transparent, #00aaff, transparent);
+            margin: clamp(15px, 3vh, 30px) auto;
+        }
+
+        /* Navigation */
+        .nav-buttons {
+            position: fixed;
+            bottom: clamp(20px, 4vh, 40px);
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: clamp(10px, 2vw, 20px);
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            padding: clamp(10px, 2vh, 15px) clamp(20px, 5vw, 40px);
+            font-size: clamp(0.9rem, 2vw, 1.1rem);
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            background-color: transparent;
+            color: #FFFFFF;
+            border: 2px solid #00aaff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            touch-action: manipulation;
+        }
+
+        .nav-btn:hover:not(:disabled) {
+            background-color: #00aaff;
+            box-shadow: 0 0 20px rgba(0, 170, 255, 0.5);
+        }
+
+        .nav-btn:active:not(:disabled) {
+            background-color: #0088cc;
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .page-counter {
+            position: fixed;
+            top: clamp(15px, 3vh, 30px);
+            right: clamp(20px, 4vw, 40px);
+            font-size: clamp(0.8rem, 2vw, 1rem);
+            color: #00aaff;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        /* Title Page Specific */
+        .title-page h1 {
+            font-size: clamp(3rem, 10vw, 6.5rem);
+            margin-bottom: 0;
+        }
+
+        .title-page .vs {
+            font-size: clamp(1.5rem, 5vw, 3rem);
+            color: #00aaff;
+            margin: clamp(10px, 2vh, 20px) 0;
+        }
+
+        /* Profile Page */
+        .profile-content {
+            max-width: 1000px;
+            width: 100%;
+        }
+
+        .profile-intro {
+            font-size: clamp(1.1rem, 2.8vw, 1.6rem);
+            line-height: 1.8;
+            margin: clamp(15px, 3vh, 30px) auto;
+            padding: clamp(15px, 3vh, 30px);
+            border-left: 4px solid #00aaff;
+            background-color: rgba(0, 170, 255, 0.05);
+            text-align: left;
+        }
+
+        /* Question Mark Icon */
+        .icon {
+            font-size: clamp(4rem, 12vw, 8rem);
+            color: #00aaff;
+            margin: clamp(20px, 4vh, 40px) 0;
+        }
+
+        /* List styling */
+        .question-list {
+            text-align: left;
+            max-width: 800px;
+            width: 90%;
+            margin: clamp(15px, 3vh, 30px) auto;
+            font-size: clamp(1.1rem, 2.8vw, 1.5rem);
+            line-height: 2;
+        }
+
+        .question-list div {
+            margin: clamp(10px, 2vh, 20px) 0;
+            padding-left: clamp(20px, 4vw, 30px);
+            position: relative;
+        }
+
+        .question-list div::before {
+            content: "•";
+            color: #00aaff;
+            position: absolute;
+            left: 0;
+            font-size: clamp(1.5rem, 3vw, 2rem);
+        }
+
+        /* Mobile-specific adjustments */
+        @media (max-width: 768px) {
+            .page {
+                padding-bottom: 100px;
+            }
+
+            .nav-buttons {
+                width: 90%;
+                max-width: 400px;
+            }
+
+            .nav-btn {
+                flex: 1;
+            }
+        }
+
+        /* Landscape mobile */
+        @media (max-height: 500px) and (orientation: landscape) {
+            .page {
+                justify-content: flex-start;
+                padding-top: 60px;
+            }
+
+            .icon {
+                margin: 10px 0;
+            }
+
+            .divider {
+                margin: 10px auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Page Counter -->
+    <div class="page-counter">
+        <span id="currentPage">1</span> / <span id="totalPages">34</span>
+    </div>
+
+    <!-- Page 1: Title Slide -->
+    <div class="page active title-page">
+        <h1>AI</h1>
+        <div class="vs">vs.</div>
+        <h1>HUMANITY</h1>
+        <div class="divider"></div>
+        <div class="subtitle">The Education Revolution: The Truths Parents Must Know</div>
+    </div>
+
+    <!-- Page 2: Profile/Introduction -->
+    <div class="page">
+        <h2 class="accent">About the Speaker</h2>
+        <div class="divider"></div>
+        <div class="profile-content">
+            <div class="profile-intro">
+                I teach machines to fight cyberattacks at Microsoft, using AI agents and LLMs to protect billions of users worldwide—and I'm a Kaggle Competition Master who loves challenging impossible ML problems. <br> <br>
+                Chris - Applied Scientist at Microsoft Security Research
+            </div>
+        </div>
+    </div>
+
+    <!-- Page 3: The Core Problem -->
+    <div class="page">
+        <h2>Why Are We So Anxious?</h2>
+        <div class="divider"></div>
+        <div class="icon">?</div>
+        <div class="question-list">
+            <div>"Is my child cheating?"</div>
+            <div>"Will this make them stop thinking?"</div>
+            <div>"Will this replace their teacher?"</div>
+        </div>
+    </div>
+
+    <!-- Page 4: The "Tech Trauma" -->
+    <div class="page">
+        <h2>We've Been Here Before.</h2>
+        <div class="divider"></div>
+        <div class="icon">⚠️</div>
+        <div class="body-text">
+            Social media promised "connection" but brought isolation.
+        </div>
+        <div class="body-text" style="margin-top: 30px;">
+            AI promises "personalization." We're right to be skeptical.
+        </div>
+    </div>
+
+    <!-- Page 5: The New Metaphor -->
+    <div class="page">
+        <h2>AI isn't a <span style="text-decoration: line-through;">storm</span> to hide from.</h2>
+        <div class="divider"></div>
+        <div class="subtitle">It's <span class="accent">climate change</span>.</div>
+        <div class="body-text" style="margin-top: 40px;">
+            The landscape has permanently changed.<br>
+            We must adapt, not just endure.
+        </div>
+    </div>
+
+    <!-- Page 6: The Agenda -->
+    <div class="page">
+        <h2>From Anxiety to Action</h2>
+        <div class="divider"></div>
+        <div class="question-list">
+            <div><strong class="accent">1. Reality:</strong> What's really happening in class.</div>
+            <div><strong class="accent">2. Changes:</strong> The new skills that matter.</div>
+            <div><strong class="accent">3. Risks:</strong> The dangers we must manage.</div>
+            <div><strong class="accent">4. Plans:</strong> Your new role as a parent.</div>
+        </div>
+    </div>
+
+    <!-- Page 7: Section Title - Part 1 -->
+    <div class="page">
+        <h1 class="accent">Part 1: THE REALITY</h1>
+        <div class="divider"></div>
+        <div class="subtitle">Demystifying the Two Biggest Myths</div>
+    </div>
+
+    <!-- Page 8: Myth 1 -->
+    <div class="page">
+        <h2 class="accent">MYTH:</h2>
+        <div class="divider"></div>
+        <h2>"AI will replace teachers."</h2>
+        <div class="icon">🤖</div>
+    </div>
+
+    <!-- Page 9: Reality 1 -->
+    <div class="page">
+        <h2 class="accent">REALITY:</h2>
+        <div class="divider"></div>
+        <h2>AI is a "Co-pilot," not the Pilot.</h2>
+        <div class="body-text" style="margin-top: 40px;">
+            It automates grading and admin, freeing teachers for the human work: mentoring, inspiring, and connecting.
+        </div>
+        <div class="icon" style="font-size: clamp(3rem, 10vw, 6rem); margin-top: 30px;">👨‍🏫 + 🤖</div>
+    </div>
+
+    <!-- Page 10: Myth 2 -->
+    <div class="page">
+        <h2 class="accent">MYTH:</h2>
+        <div class="divider"></div>
+        <h2>"AI is just a cheating tool."</h2>
+        <div class="icon">📝❌</div>
+    </div>
+
+    <!-- Page 11: Reality 2 -->
+    <div class="page">
+        <h2 class="accent">REALITY:</h2>
+        <div class="divider"></div>
+        <h2>It's a tool, like a calculator.</h2>
+        <div class="body-text" style="margin-top: 40px;">
+            We don't ban calculators; we teach <em>when</em> to use them. The goal is to define academic integrity for a new era.
+        </div>
+        <div class="icon" style="margin-top: 30px;">🧮</div>
+    </div>
+
+    <!-- Page 12: What AI Actually Does (Visible) -->
+    <div class="page">
+        <h2>"Visible AI": The Personal Tutor</h2>
+        <div class="divider"></div>
+        <div class="question-list">
+            <div><strong class="accent">Intelligent Tutors:</strong> 24/7, patient help (Carnegie Learning, Khanmigo).</div>
+            <div><strong class="accent">Adaptive Learning:</strong> The lesson changes based on your child's answers (DreamBox).</div>
+        </div>
+        <div class="icon" style="margin-top: 30px;">💻</div>
+    </div>
+
+    <!-- Page 13: What AI Actually Does (Invisible) -->
+    <div class="page">
+        <h2>"Invisible AI": The Support System</h2>
+        <div class="divider"></div>
+        <div class="question-list">
+            <div><strong class="accent">Accessibility:</strong> Real-time translation and text-to-speech for all learners.</div>
+            <div><strong class="accent">Analytics:</strong> Helps teachers spot who is falling behind <em>before</em> they fail.</div>
+        </div>
+        <div class="icon" style="margin-top: 30px;">📊</div>
+    </div>
+
+    <!-- Page 14: Section Title - Part 2 -->
+    <div class="page">
+        <h1 class="accent">Part 2: THE CHANGE</h1>
+        <div class="divider"></div>
+        <div class="subtitle">Why "Human Skills" are the New "Hard Skills"</div>
+    </div>
+
+    <!-- Page 15: The Cognitive Gym -->
+    <div class="page">
+        <h2>The Cognitive Gym</h2>
+        <div class="divider"></div>
+        <div class="body-text">
+            AI is a "cognitive forklift." It can do the heavy lifting. But if you never lift the weights yourself, your muscles (your brain) will atrophy.
+        </div>
+        <div class="icon" style="margin-top: 40px;">🏋️ vs 🏗️</div>
+    </div>
+
+    <!-- Page 16: The New "Core Four" -->
+    <div class="page">
+        <h2>Skills That Cannot Be Automated</h2>
+        <div class="divider"></div>
+        <div class="question-list">
+            <div><strong class="accent">1. Critical Thinking</strong> 🧠</div>
+            <div><strong class="accent">2. Creativity</strong> 💡</div>
+            <div><strong class="accent">3. Collaboration</strong> 👥</div>
+            <div><strong class="accent">4. Empathy</strong> ❤️</div>
+        </div>
+    </div>
+
+    <!-- Page 17: Skill 1 - Critical Thinking -->
+    <div class="page">
+        <h2>Skill 1: Critical Thinking</h2>
+        <div class="divider"></div>
+        <div class="subtitle">The job is no longer <em>finding</em> answers.</div>
+        <div class="subtitle" style="margin-top: 30px;">It's <span class="accent">questioning</span> them.</div>
+        <div class="body-text" style="margin-top: 40px;">
+            AI is trained to be persuasive, not truthful. It "hallucinates."
+        </div>
+        <div class="icon" style="margin-top: 30px;">✓ ✗</div>
+    </div>
+
+    <!-- Page 18: Skill 2 - Creativity -->
+    <div class="page">
+        <h2>Skill 2: Creativity</h2>
+        <div class="divider"></div>
+        <div class="subtitle">The job is no longer <em>generating</em> content.</div>
+        <div class="subtitle" style="margin-top: 30px;">It's having original <span class="accent">intent</span>.</div>
+        <div class="body-text" style="margin-top: 40px;">
+            AI is brilliant at copying the past; it's incapable of a novel future.
+        </div>
+        <div class="icon" style="margin-top: 30px;">🪄 vs 🎨</div>
+    </div>
+
+    <!-- Page 19: Skill 3 - Collaboration -->
+    <div class="page">
+        <h2>Skill 3: Collaboration</h2>
+        <div class="divider"></div>
+        <div class="subtitle">AI cannot build a team.</div>
+        <div class="body-text" style="margin-top: 40px;">
+            It cannot navigate human conflict, build trust, or read a room. The most valuable work will be done by <em>teams</em> using AI, not individuals.
+        </div>
+        <div class="icon" style="margin-top: 30px;">👥👥👥</div>
+    </div>
+
+    <!-- Page 20: Skill 4 - Empathy -->
+    <div class="page">
+        <h2>Skill 4: Empathy & E.I.</h2>
+        <div class="divider"></div>
+        <div class="subtitle">The Ultimate Human Skill</div>
+        <div class="body-text" style="margin-top: 40px;">
+            AI can <em>calculate</em> emotion, but it cannot <em>care</em>. This is the most valuable human skill in a data-driven world.
+        </div>
+        <div class="icon" style="margin-top: 30px;">❤️</div>
+    </div>
+
+    <!-- Page 21: Section Title - Part 3 -->
+    <div class="page">
+        <h1 class="accent">Part 3: THE RISKS</h1>
+        <div class="divider"></div>
+        <div class="subtitle">The Truths We Cannot Ignore</div>
+    </div>
+
+    <!-- Page 22: Risk 1 - Algorithmic Bias -->
+    <div class="page">
+        <h2>Risk 1: Algorithmic Bias</h2>
+        <div class="divider"></div>
+        <div class="subtitle">"Garbage In, Gospel Out"</div>
+        <div class="body-text" style="margin-top: 40px;">
+            AI is trained on historical data. If that data is racist, sexist, or biased, the AI will learn, automate, and <em>amplify</em> that bias.
+        </div>
+        <div class="icon" style="margin-top: 30px;">⚖️</div>
+    </div>
+
+    <!-- Page 23: Risk 2 - Data Privacy -->
+    <div class="page">
+        <h2>Risk 2: Data Privacy</h2>
+        <div class="divider"></div>
+        <div class="subtitle">Who owns your child's learning data?</div>
+        <div class="body-text" style="margin-top: 40px;">
+            Every wrong answer, every learning pattern. This data is the "fuel" for AI. We must ask who controls it and how it's protected.
+        </div>
+        <div class="icon" style="margin-top: 30px;">🔒</div>
+    </div>
+
+    <!-- Page 24: Risk 3 - The New Digital Divide -->
+    <div class="page">
+        <h2>Risk 3: The <em>New</em> Digital Divide</h2>
+        <div class="divider"></div>
+        <div class="subtitle">The "AI Literacy" Gap</div>
+        <div class="body-text" style="margin-top: 40px;">
+            The old divide was "access to laptops." The new divide is "access to <em>using AI critically</em>."
+        </div>
+        <div class="icon" style="margin-top: 30px;">👤 ⚙️ vs ⚙️ 👤</div>
+    </div>
+
+    <!-- Page 25: The Solution -->
+    <div class="page">
+        <h2>The "Human-in-the-Loop"</h2>
+        <div class="divider"></div>
+        <div class="body-text">
+            This must be our non-negotiable rule. AI can <em>advise</em>. It can <em>flag</em>. It can <em>suggest</em>. But a human must <span class="accent">always</span> make the final decision.
+        </div>
+        <div class="icon" style="margin-top: 40px;">👤 ⟳ ⚙️</div>
+    </div>
+
+    <!-- Page 26: Section Title - Part 4 -->
+    <div class="page">
+        <h1 class="accent">Part 4: THE ACTION PLAN</h1>
+        <div class="divider"></div>
+        <div class="subtitle">Your New Role as a Parent</div>
+    </div>
+
+    <!-- Page 27: Action 1 - Talk to Your Child -->
+    <div class="page">
+        <h2>Action 1: Talk to Your Child</h2>
+        <div class="divider"></div>
+        <div class="subtitle">Be a "Coach," not a "Cop."</div>
+        <div class="body-text" style="margin-top: 40px;">
+            Don't interrogate ("Did you cheat?"). Be curious ("Show me how this works.").
+        </div>
+        <div class="icon" style="margin-top: 40px; font-size: clamp(3rem, 10vw, 6rem);">🚫👮 → 🎯</div>
+    </div>
+
+    <!-- Page 28: Action 2 - Talk to Your School -->
+    <div class="page">
+        <h2>Action 2: Talk to Your School</h2>
+        <div class="divider"></div>
+        <div class="subtitle">Be a "Partner," not a "Plaintiff."</div>
+        <div class="body-text" style="margin-top: 40px;">
+            Schools are scrambling to catch up, just like you. They need your partnership to build good policy.
+        </div>
+        <div class="icon" style="margin-top: 40px;">🤝</div>
+    </div>
+
+    <!-- Page 29: The Parent Checklist -->
+    <div class="page">
+        <h2>5 Questions to Ask Your School</h2>
+        <div class="divider"></div>
+        <div class="question-list">
+            <div>Do we have a formal AI policy?</div>
+            <div>How are we training teachers to use this?</div>
+            <div>How are we protecting student data privacy?</div>
+            <div>How do we ensure a "human-in-the-loop" for all big decisions?</div>
+            <div>How are we ensuring equity and addressing bias?</div>
+        </div>
+    </div>
+
+    <!-- Page 30: Action 3 - Be the Example -->
+    <div class="page">
+        <h2>Action 3: Be the Example</h2>
+        <div class="divider"></div>
+        <div class="subtitle">Model Responsible Use</div>
+        <div class="body-text" style="margin-top: 40px;">
+            Let your child see <em>you</em> use AI. Let them hear you say, "That's amazing, but let me double-check that fact." You are their primary model for critical thinking.
+        </div>
+        <div class="icon" style="margin-top: 40px; font-size: clamp(3rem, 10vw, 6rem);">👨‍👩‍👧‍👦 💻</div>
+    </div>
+
+    <!-- Page 31: The Final Truth -->
+    <div class="page">
+        <h2>Embrace the "Productive Struggle"</h2>
+        <div class="divider"></div>
+        <div class="body-text">
+            Learning is <em>supposed</em> to be hard. The "struggle" is what builds the cognitive muscle. Our greatest job is to stop AI from eliminating the struggle.
+        </div>
+        <div class="icon" style="margin-top: 40px;">🧠 💪</div>
+    </div>
+
+    <!-- Page 32: Closing Statement -->
+    <div class="page">
+        <h2>From Anxiety to Agency</h2>
+        <div class="divider"></div>
+        <div class="body-text">
+            The future belongs to those who can <em>critically</em> and <em>creatively</em> direct these powerful tools, not be directed by them.
+        </div>
+        <div class="icon accent" style="margin-top: 40px; font-size: clamp(4rem, 12vw, 8rem);">👤</div>
+    </div>
+
+    <!-- Page 33: Q&A -->
+    <div class="page">
+        <h1>Q&A</h1>
+        <div class="divider"></div>
+        <div class="subtitle">Let's discuss.</div>
+    </div>
+
+    <!-- Page 34: Thank You -->
+    <div class="page">
+        <h1>Thank You</h1>
+        <div class="divider"></div>
+        <div class="subtitle" style="margin-top: 60px;">
+            Let's help our children lead the AI revolution with wisdom, agency, and humanity.
+        </div>
+    </div>
+
+    <!-- Navigation Buttons -->
+    <div class="nav-buttons">
+        <button class="nav-btn" id="prevBtn" onclick="changePage(-1)">Prev</button>
+        <button class="nav-btn" id="nextBtn" onclick="changePage(1)">Next</button>
+    </div>
+
+    <script>
+        let currentPage = 1;
+        const totalPages = 34;
+
+        function showPage(pageNum) {
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(page => page.classList.remove('active'));
+            pages[pageNum - 1].classList.add('active');
+
+            document.getElementById('currentPage').textContent = pageNum;
+
+            // Update button states
+            document.getElementById('prevBtn').disabled = (pageNum === 1);
+            document.getElementById('nextBtn').disabled = (pageNum === totalPages);
+
+            // Scroll to top of page on navigation
+            window.scrollTo(0, 0);
+        }
+
+        function changePage(direction) {
+            currentPage += direction;
+            if (currentPage < 1) currentPage = 1;
+            if (currentPage > totalPages) currentPage = totalPages;
+            showPage(currentPage);
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') changePage(-1);
+            if (e.key === 'ArrowRight') changePage(1);
+            // Space bar to go to next page
+            if (e.key === ' ') {
+                e.preventDefault();
+                changePage(1);
+            }
+        });
+
+        // Touch/swipe support for mobile
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            if (touchEndX < touchStartX - swipeThreshold) {
+                // Swipe left - next page
+                changePage(1);
+            }
+            if (touchEndX > touchStartX + swipeThreshold) {
+                // Swipe right - previous page
+                changePage(-1);
+            }
+        }
+
+        // Initialize
+        showPage(1);
+    </script>
+</body>
+</html>
