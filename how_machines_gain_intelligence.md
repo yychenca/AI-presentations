@@ -1,7 +1,4 @@
 # How Machines Gain Intelligence: A Learning Guide for Curious Minds
-
-*A reference companion to the presentation by Chris Chen, Sr. Applied Scientist at Microsoft*
-
 ---
 
 ## Table of Contents
@@ -586,7 +583,3 @@ AI is one of the most transformative technologies of our time. Understanding it 
 Welcome to the AI revolution. You're not just a spectator—you're a future builder.
 
 ---
-
-*Last updated: 2025*
-
-*Created as a companion to "How Machines Gain Intelligence?" presentation*
